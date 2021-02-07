@@ -1,0 +1,8 @@
+{
+  "short_name": "promethium-coding-challenge",
+  "name": "Promethium Coding Challenge",
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff"
+}
