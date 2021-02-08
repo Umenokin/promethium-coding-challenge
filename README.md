@@ -1,6 +1,8 @@
 # Introduction
 
-Submission for Promethium FE Coding Challenge. App is not currently mobile-friendly
+Submission for Promethium FE Coding Challenge. App is not currently mobile-friendly. 
+
+This uses .env variables so you will need to create your own api key and put it in REACT_APP_WEATHER_API_KEY.
 
 # Getting Started with Create React App
 
