@@ -22,12 +22,42 @@ const WeatherTable = (props) => {
         1006984,
         1796247
     ]
+    const [listOfIds, setListOfIds] = useState([]);
     const [listOfCityNames, setListOfCityNames] = useState([]);
     const [listOfTemperatures, setListOfTemperatures] = useState([]);
     const [listOfMinTemperatures, setListOfMinTemperatures] = useState([]);
     const [listOfUpdatedAt, setListOfUpdatedAt] = useState([]);
 
+    const handleReload = () => {
+        setListOfCityNames([]);
+        setListOfTemperatures([]);
+        setListOfMinTemperatures([]);
+        setListOfUpdatedAt([]);
+        listOfIds.map((id) => 
+            fetch(`https://api.openweathermap.org/data/2.5/weather?id=${id}&appid=${process.env.REACT_APP_WEATHER_API_KEY}`)
+            .then((response) => response.json())
+            .then((data) => {
+                var date = new Date();
+                var hours = date.getHours();
+                var minutes = date.getMinutes();
+                var seconds = date.getSeconds();
+                var milliseconds = date.getMilliseconds();
+                var ampm = hours >= 12 ? 'pm' : 'am';
+                hours = hours % 12;
+                hours = hours ? hours : 12; // the hour '0' should be '12'
+                minutes = minutes < 10 ? '0' + minutes : minutes;
+                seconds = seconds < 10 ? '0' + seconds : seconds;
+                milliseconds = milliseconds < 10 ? '0' + milliseconds : milliseconds;
+                var currTime = hours + ':' + minutes + ':' + seconds + ':' + milliseconds + ' ' + ampm;
+                setListOfCityNames(cityNames => cityNames.concat(data.name));
+                setListOfTemperatures(temperatures => temperatures.concat(data.main.temp));
+                setListOfMinTemperatures(minTemperatures => minTemperatures.concat(data.main.temp_min));
+                setListOfUpdatedAt(updatedAt => updatedAt.concat(currTime));
+            })
+        )
+    }
     const handleDelete = (index) => {
+        setListOfIds(ids => ids.filter(id => ids.indexOf(id) !== index));
         setListOfCityNames(cityNames => cityNames.filter(city => cityNames.indexOf(city) !== index));
         setListOfTemperatures(temperatures => temperatures.filter(temperature => temperatures.indexOf(temperature) !== index));
         setListOfMinTemperatures(minTemperatures => minTemperatures.filter(minTemperature => minTemperatures.indexOf(minTemperature) !== index));
@@ -50,6 +80,7 @@ const WeatherTable = (props) => {
                 seconds = seconds < 10 ? '0' + seconds : seconds;
                 milliseconds = milliseconds < 10 ? '0' + milliseconds : milliseconds;
                 var currTime = hours + ':' + minutes + ':' + seconds + ':' + milliseconds + ' ' + ampm;
+                setListOfIds(ids => ids.concat(id));
                 setListOfCityNames(cityNames => cityNames.concat(data.name));
                 setListOfTemperatures(temperatures => temperatures.concat(data.main.temp));
                 setListOfMinTemperatures(minTemperatures => minTemperatures.concat(data.main.temp_min));
@@ -89,7 +120,7 @@ const WeatherTable = (props) => {
                     <Divider/>
                 </div>
                 )}
-                <ReloadButton/>
+                <ReloadButton handleClick ={() => handleReload()}/>
             </Container>
         </Box>
     );

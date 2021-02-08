@@ -9,7 +9,7 @@ import {
 const ReloadButton = (props) => {
     const classes = props.classes;
     return (
-       <Button className={classes.button} variant="contained" onClick={() => window.location.reload()}>
+       <Button className={classes.button} variant="contained" onClick={() => props.handleClick()}>
            <Typography className={classes.buttonText}>Reload</Typography>
         </Button>
     );
