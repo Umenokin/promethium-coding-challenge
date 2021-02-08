@@ -38,8 +38,18 @@ const WeatherTable = (props) => {
             fetch(`https://api.openweathermap.org/data/2.5/weather?id=${id}&appid=${process.env.REACT_APP_WEATHER_API_KEY}`)
             .then((response) => response.json())
             .then((data) => {
-                var today = new Date();
-                var currTime = ( today.getHours() > 12 ? (today.getHours()-12) + ':' + today.getMinutes() + ':' + today.getSeconds() + 'PM' : today.getHours() + ':' + today.getMinutes() + ':' + today.getSeconds() + 'AM');
+                var date = new Date();
+                var hours = date.getHours();
+                var minutes = date.getMinutes();
+                var seconds = date.getSeconds();
+                var milliseconds = date.getMilliseconds();
+                var ampm = hours >= 12 ? 'pm' : 'am';
+                hours = hours % 12;
+                hours = hours ? hours : 12; // the hour '0' should be '12'
+                minutes = minutes < 10 ? '0' + minutes : minutes;
+                seconds = seconds < 10 ? '0' + seconds : seconds;
+                milliseconds = milliseconds < 10 ? '0' + milliseconds : milliseconds;
+                var currTime = hours + ':' + minutes + ':' + seconds + ':' + milliseconds + ' ' + ampm;
                 setListOfCityNames(cityNames => cityNames.concat(data.name));
                 setListOfTemperatures(temperatures => temperatures.concat(data.main.temp));
                 setListOfMinTemperatures(minTemperatures => minTemperatures.concat(data.main.temp_min));
@@ -90,7 +100,7 @@ const useStyles = (theme) => createStyles({
         backgroundColor: theme.palette.background.main,
         backgroundSize: 'cover',
         width: '100%',
-        height: '100%',
+        height: '100vh',
         margin: '0px',
         padding: '0px',
         overflowX: 'hidden',
@@ -100,6 +110,9 @@ const useStyles = (theme) => createStyles({
         fontFamily: theme.palette.typography.fontFamily,
         color: theme.palette.text.primary,
         backgroundColor: theme.palette.secondary.main,
+        [theme.breakpoints.down('sm')]: {
+            fontSize: '.5rem',
+        },
     }
 });
 
