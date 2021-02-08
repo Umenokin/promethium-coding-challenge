@@ -28,6 +28,32 @@ const WeatherTable = (props) => {
     const [listOfMinTemperatures, setListOfMinTemperatures] = useState([]);
     const [listOfUpdatedAt, setListOfUpdatedAt] = useState([]);
 
+    const handleSingleReload = (index) => {
+        listOfIds.map((id) => 
+            fetch(`https://api.openweathermap.org/data/2.5/weather?id=${id}&appid=${process.env.REACT_APP_WEATHER_API_KEY}`)
+            .then((response) => response.json())
+            .then((data) => {
+                if (listOfCityNames.indexOf(data.name) === index) {
+                    var date = new Date();
+                    var hours = date.getHours();
+                    var minutes = date.getMinutes();
+                    var seconds = date.getSeconds();
+                    var milliseconds = date.getMilliseconds();
+                    var ampm = hours >= 12 ? 'pm' : 'am';
+                    hours = hours % 12;
+                    hours = hours ? hours : 12; // the hour '0' should be '12'
+                    minutes = minutes < 10 ? '0' + minutes : minutes;
+                    seconds = seconds < 10 ? '0' + seconds : seconds;
+                    milliseconds = milliseconds < 10 ? '0' + milliseconds : milliseconds;
+                    var currTime = hours + ':' + minutes + ':' + seconds + ':' + milliseconds + ' ' + ampm;
+                    setListOfCityNames(cityNames => cityNames.slice(0, index).concat([data.name]).concat(cityNames.slice(index + 1)));
+                    setListOfTemperatures(temperatures => temperatures.slice(0, index).concat([data.main.temp]).concat(temperatures.slice(index + 1)));
+                    setListOfMinTemperatures(minTemperatures => minTemperatures.slice(0, index).concat([data.main.temp_min]).concat(minTemperatures.slice(index + 1)));
+                    setListOfUpdatedAt(updatedAt => updatedAt.slice(0, index).concat([currTime]).concat(updatedAt.slice(index + 1)));
+                }
+            })
+        )
+    }
     const handleReload = () => {
         setListOfCityNames([]);
         setListOfTemperatures([]);
@@ -112,6 +138,7 @@ const WeatherTable = (props) => {
                 {listOfCityNames.map((city, index) =>
                     <div>
                     <WeatherTableRow
+                    handleSingleReload = {() => handleSingleReload(index)}
                     cityName = {city}
                     temperature = {listOfTemperatures[index]}
                     minTemperature = {listOfMinTemperatures[index]}

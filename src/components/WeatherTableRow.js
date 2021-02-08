@@ -6,6 +6,7 @@ import {
     withStyles,
 } from '@material-ui/core';
 import WeatherTableItem from './WeatherTableItem';
+import WeatherTableItemLink from './WeatherTableItemLink';
 
 const WeatherTableRow = (props) => {
     const classes = props.classes;
@@ -16,7 +17,7 @@ const WeatherTableRow = (props) => {
             container
             direction="row"
         >
-                <WeatherTableItem input={props.cityName}/>  
+                <WeatherTableItemLink handleClick = {() => props.handleSingleReload()} input={props.cityName}/>  
                 <WeatherTableItem input={props.temperature}/>  
                 <WeatherTableItem input={props.minTemperature}/>  
                 <WeatherTableItem input={props.updatedAt}/>  
